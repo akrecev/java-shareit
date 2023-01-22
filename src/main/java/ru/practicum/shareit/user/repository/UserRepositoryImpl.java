@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.repository;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exception.model.EmailConflictException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
@@ -13,7 +12,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        throwEmailConflict(user);
         user.setId(newId());
         users.put(user.getId(), user);
 
@@ -34,7 +32,6 @@ public class UserRepositoryImpl implements UserRepository {
     public User update(User updatedUser) {
         User existingUser = users.get(updatedUser.getId());
         if (updatedUser.getEmail() != null) {
-            throwEmailConflict(updatedUser);
             existingUser.setEmail(updatedUser.getEmail());
         }
         if (updatedUser.getName() != null) {
@@ -53,14 +50,5 @@ public class UserRepositoryImpl implements UserRepository {
         return ++generatedId;
     }
 
-    private void throwEmailConflict(User user) {
-        boolean isRepeatEmail = users.values()
-                .stream()
-                .map(User::getEmail)
-                .anyMatch(user.getEmail()::equals);
-        if (isRepeatEmail) {
-            throw new EmailConflictException("User email already registered");
-        }
-    }
 
 }

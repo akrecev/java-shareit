@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.model.ConflictException;
 import ru.practicum.shareit.exception.model.DataNotFoundException;
 import ru.practicum.shareit.utility.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         User savedUser = UserMapper.toUser(userDto);
+        throwEmailConflict(savedUser);
 
         return UserMapper.toUserDto(userRepository.save(savedUser));
     }
@@ -42,6 +44,9 @@ public class UserServiceImpl implements UserService {
         find(id);
         User updatedUser = UserMapper.toUser(userDto);
         updatedUser.setId(id);
+        if (updatedUser.getEmail() != null) {
+            throwEmailConflict(updatedUser);
+        }
 
         return UserMapper.toUserDto(userRepository.update(updatedUser));
     }
@@ -54,5 +59,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User find(Long id) {
         return userRepository.find(id).orElseThrow(() -> new DataNotFoundException("id:" + id));
+    }
+
+    private void throwEmailConflict(User user) {
+        boolean isRepeatEmail = userRepository.findAll()
+                .stream()
+                .map(User::getEmail)
+                .anyMatch(user.getEmail()::equals);
+        if (isRepeatEmail) {
+            throw new ConflictException("User email already registered");
+        }
     }
 }

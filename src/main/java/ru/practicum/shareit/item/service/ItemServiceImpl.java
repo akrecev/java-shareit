@@ -2,14 +2,14 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.model.BadRequestException;
 import ru.practicum.shareit.exception.model.DataNotFoundException;
-import ru.practicum.shareit.exception.model.MissingUserInRequestException;
-import ru.practicum.shareit.utility.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.utility.ItemMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +25,9 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(Long userId, ItemDto itemDto) {
         throwMissingUserInRequest(userId);
         User owner = userService.find(userId);
-        Item savedItem = ItemMapper.toItem(itemDto, owner);
+        Item savedItem = itemRepository.save(ItemMapper.toItem(itemDto, owner));
 
-        return ItemMapper.toItemDto(itemRepository.save(savedItem));
+        return ItemMapper.toItemDto(savedItem);
     }
 
     @Override
@@ -60,11 +60,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto update(Long userId, Long itemId, ItemDto itemDto) {
         throwMissingUserInRequest(userId);
+        if (!itemRepository.findOwners().contains(userId)) {
+            throw new DataNotFoundException("User id=" + userId + " items list not found");
+        }
         User owner = userService.find(userId);
         find(itemId);
         Item updatedItem = ItemMapper.toItem(itemDto, owner);
         updatedItem.setId(itemId);
-        return ItemMapper.toItemDto(itemRepository.update(updatedItem));
+        updatedItem = itemRepository.update(updatedItem);
+
+        return ItemMapper.toItemDto(updatedItem);
     }
 
     @Override
@@ -80,7 +85,7 @@ public class ItemServiceImpl implements ItemService {
 
     private void throwMissingUserInRequest(Long userId) {
         if (userId == null) {
-            throw new MissingUserInRequestException("Missing user id in request");
+            throw new BadRequestException("Missing user id in request");
         }
     }
 }

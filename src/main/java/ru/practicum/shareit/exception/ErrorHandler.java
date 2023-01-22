@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exception.model.DataNotFoundException;
-import ru.practicum.shareit.exception.model.EmailConflictException;
-import ru.practicum.shareit.exception.model.MissingUserInRequestException;
+import ru.practicum.shareit.exception.model.ConflictException;
+import ru.practicum.shareit.exception.model.BadRequestException;
 
 @RestControllerAdvice
 @Slf4j
@@ -23,21 +23,21 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEmailConflictException(final EmailConflictException e) {
+    public ErrorResponse handleConflictException(final ConflictException e) {
         log.error("409 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+    public ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
         log.error("400 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMissingUserInRequest(final MissingUserInRequestException e) {
+    public ErrorResponse handleBadRequestException(final BadRequestException e) {
         log.error("400 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }

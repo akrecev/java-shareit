@@ -15,6 +15,8 @@ public interface ItemRepository {
 
     List<Item> findUserAllItem(long userId);
 
+    List<Long> findOwners();
+
     Item update(Item updatedItem);
 
     void delete(long userId, long itemId);

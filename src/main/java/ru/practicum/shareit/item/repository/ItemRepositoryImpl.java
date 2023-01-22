@@ -47,12 +47,16 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
+    public List<Long> findOwners() {
+        return items.keySet().stream()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Item update(Item updatedItem) {
         Long ownerId = updatedItem.getOwner().getId();
         Long itemId = updatedItem.getId();
-        if (!items.containsKey(ownerId)) {
-            throw new DataNotFoundException("User id=" + ownerId + " items list not found");
-        }
         List<Item> userItems = items.get(ownerId);
         Item existingItem = userItems.stream()
                 .filter(item -> item.getId().equals(itemId))
