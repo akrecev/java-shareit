@@ -1,8 +1,10 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.user.dto;
 
 import lombok.*;
 import ru.practicum.shareit.utility.Create;
+import ru.practicum.shareit.utility.Update;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -12,22 +14,21 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ItemDto {
+public class UserDto {
+
     private Long id;
     @NotBlank(groups = {Create.class})
     private String name;
-    @NotBlank(groups = {Create.class})
-    private String description;
     @NotNull(groups = {Create.class})
-    private Boolean available;
-    private Long request;
+    @Email(groups = {Create.class, Update.class})
+    private String email;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ItemDto itemDto = (ItemDto) o;
-        return id.equals(itemDto.id);
+        UserDto userDto = (UserDto) o;
+        return id.equals(userDto.id);
     }
 
     @Override
