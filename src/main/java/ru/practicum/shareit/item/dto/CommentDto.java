@@ -1,33 +1,33 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.item.dto;
 
 import lombok.*;
+import ru.practicum.shareit.utility.Create;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
-@Entity
-@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User {
+public class CommentDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @NotBlank(groups = {Create.class})
+    private String text;
 
-    private String email;
+    private Long itemId;
+
+    private Long authorId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id);
+        CommentDto that = (CommentDto) o;
+        return id.equals(that.id);
     }
 
     @Override

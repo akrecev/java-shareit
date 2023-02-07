@@ -1,33 +1,40 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.item.model;
 
 import lombok.*;
+import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users")
+@Table(name = "comments")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String text;
 
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id);
+        Comment that = (Comment) o;
+        return id.equals(that.id);
     }
 
     @Override
