@@ -64,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDtoResponse get(Long userId, Long itemId) {
         ItemDtoResponse responseItem = ItemMapper.toItemDtoResponse(findItem(itemId));
-        if (userId == findItem(itemId).getOwner().getId()) {
+        if (userId.equals(findItem(itemId).getOwner().getId())) {
             responseItem.setLastBooking(
                     BookingMapper.toBookingDto(
                             bookingRepository.findLast(itemId, LocalDateTime.now(), PageRequest.of(0, 1))
@@ -157,7 +157,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void throwNotOwnerRequest(Long userId, Item item) {
-        if (item.getOwner().getId() != userId) {
+        if (!item.getOwner().getId().equals(userId)) {
             throw new DataNotFoundException("User id=" + userId + " is not owner of item " + item);
         }
     }

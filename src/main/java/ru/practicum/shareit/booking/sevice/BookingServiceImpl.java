@@ -38,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = BookingMapper.toBooking(bookingDto);
         booking.setBooker(booker);
         booking.setItem(item);
-        if (userId == item.getOwner().getId()) {
+        if (userId.equals(item.getOwner().getId())) {
             throw new DataNotFoundException("User id=" + userId);
         }
         if (item.getAvailable()) {
@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDtoResponse get(Long userId, Long bookingId) {
         findUser(userId);
         Booking booking = findBooking(bookingId);
-        if (userId == booking.getBooker().getId() || userId == booking.getItem().getOwner().getId()) {
+        if (userId.equals(booking.getBooker().getId()) || userId.equals(booking.getItem().getOwner().getId())) {
             return BookingMapper.toBookingDtoResponse(booking);
         }
         throw new DataNotFoundException("User id= " + userId);
@@ -134,7 +134,7 @@ public class BookingServiceImpl implements BookingService {
         if (!booking.getStatus().equals(Status.WAITING)) {
             throw new BadRequestException("Booking is checked");
         }
-        if (userId == booking.getItem().getOwner().getId()) {
+        if (userId.equals(booking.getItem().getOwner().getId())) {
             if (approved) {
                 booking.setStatus(Status.APPROVED);
             } else {
