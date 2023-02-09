@@ -4,7 +4,6 @@ import lombok.*;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.validate.StartBeforeEnd;
 import ru.practicum.shareit.utility.Create;
-import ru.practicum.shareit.utility.Update;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
@@ -17,10 +16,9 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@StartBeforeEnd(groups = {Create.class, Update.class})
+@StartBeforeEnd(groups = {Create.class})
 public class BookingDto {
 
-    @NotNull(groups = {Update.class})
     private Long id;
 
     @FutureOrPresent(groups = {Create.class})

@@ -12,10 +12,15 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 public class CommentDtoResponse {
+
     private Long id;
+
     private String text;
+
     private Item item;
+
     private String authorName;
+
     private LocalDateTime created;
 
     @Override

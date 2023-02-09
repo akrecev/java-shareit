@@ -4,7 +4,6 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
-import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
@@ -23,5 +22,4 @@ public interface ItemService {
 
     void delete(Long userId, Long itemId);
 
-    Item findItem(Long id);
 }

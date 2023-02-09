@@ -13,6 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 public class ItemDto {
+
     private Long id;
 
     @NotBlank(groups = {Create.class})

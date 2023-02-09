@@ -13,13 +13,21 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 public class ItemDtoResponse {
+
     private Long id;
+
     private String name;
+
     private String description;
+
     private Boolean available;
+
     private BookingDto lastBooking;
+
     private BookingDto nextBooking;
+
     private List<CommentDtoResponse> comments;
+
     private ItemRequest request;
 
     @Override

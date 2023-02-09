@@ -13,6 +13,9 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.user.UserMapper.toUser;
+import static ru.practicum.shareit.user.UserMapper.toUserDto;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -22,14 +25,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
-        User savedUser = UserMapper.toUser(userDto);
+        User user = toUser(userDto);
+        User savedUser = userRepository.save(user);
 
-        return UserMapper.toUserDto(userRepository.save(savedUser));
+        return toUserDto(savedUser);
     }
 
     @Override
     public UserDto get(Long id) {
-        return UserMapper.toUserDto(find(id));
+        return userRepository.findById(id)
+                .map(UserMapper::toUserDto)
+                .orElseThrow(() -> new DataNotFoundException("id:" + id));
     }
 
     @Override
@@ -43,7 +49,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto update(Long id, UserDto userDto) {
-        User user = find(id);
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("id:" + id));
+
         if (userDto.getName() != null && !userDto.getName().equals(user.getName())) {
             user.setName(userDto.getName());
         }
@@ -51,7 +60,7 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userDto.getEmail());
         }
 
-        return UserMapper.toUserDto(userRepository.save(user));
+        return toUserDto(userRepository.save(user));
     }
 
     @Override
@@ -60,7 +69,4 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    private User find(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("id:" + id));
-    }
 }

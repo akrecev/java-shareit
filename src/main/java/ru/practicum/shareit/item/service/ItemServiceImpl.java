@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.model.BadRequestException;
 import ru.practicum.shareit.exception.model.DataNotFoundException;
@@ -26,6 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.booking.BookingMapper.toBookingDto;
+import static ru.practicum.shareit.item.CommentMapper.toComment;
+import static ru.practicum.shareit.item.CommentMapper.toCommentDtoResponse;
+import static ru.practicum.shareit.item.ItemMapper.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -39,39 +43,53 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto create(Long userId, ItemDto itemDto) {
-        User owner = findUser(userId);
-        Item savedItem = itemRepository.save(ItemMapper.toItem(itemDto, owner));
 
-        return ItemMapper.toItemDto(savedItem);
+        User owner = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User:" + userId));
+
+        Item savedItem = itemRepository.save(toItem(itemDto, owner));
+
+        return toItemDto(savedItem);
     }
 
     @Override
+    @Transactional
     public CommentDtoResponse commentCreate(Long userId, Long itemId, CommentDto commentDto) {
-        User author = findUser(userId);
-        Item item = findItem(itemId);
+
+        User author = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User:" + userId));
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
+
         bookingRepository.findBookingPast(userId, LocalDateTime.now())
                 .stream()
                 .filter(booking -> booking.getItem().getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException("User id=" + userId + " did not use item id=" + itemId));
-        Comment comment = CommentMapper.toComment(commentDto);
+        Comment comment = toComment(commentDto);
         comment.setAuthor(author);
         comment.setItem(item);
+        Comment savedComment = commentRepository.save(comment);
 
-        return CommentMapper.toCommentDtoResponse(commentRepository.save(comment));
+        return toCommentDtoResponse(savedComment);
     }
 
     @Override
     public ItemDtoResponse get(Long userId, Long itemId) {
-        ItemDtoResponse responseItem = ItemMapper.toItemDtoResponse(findItem(itemId));
-        if (userId.equals(findItem(itemId).getOwner().getId())) {
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
+
+        ItemDtoResponse responseItem = toItemDtoResponse(item);
+        if (userId.equals(item.getOwner().getId())) {
             responseItem.setLastBooking(
-                    BookingMapper.toBookingDto(
+                    toBookingDto(
                             bookingRepository.findLast(itemId, LocalDateTime.now(), PageRequest.of(0, 1))
                     )
             );
             responseItem.setNextBooking(
-                    BookingMapper.toBookingDto(
+                    toBookingDto(
                             bookingRepository.findNext(itemId, LocalDateTime.now(), PageRequest.of(0, 1))
                     )
             );
@@ -91,13 +109,13 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findAllByOwnerId(userId).stream()
                 .map(ItemMapper::toItemDtoResponse)
                 .peek(itemDtoResponse -> itemDtoResponse.setLastBooking(
-                        BookingMapper.toBookingDto(
+                        toBookingDto(
                                 bookingRepository.findLast(itemDtoResponse.getId(),
                                         LocalDateTime.now(), PageRequest.of(0, 1))
                         )
                 ))
                 .peek(itemDtoResponse -> itemDtoResponse.setNextBooking(
-                        BookingMapper.toBookingDto(
+                        toBookingDto(
                                 bookingRepository.findNext(itemDtoResponse.getId(),
                                         LocalDateTime.now(), PageRequest.of(0, 1))
                         )
@@ -122,8 +140,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto update(Long userId, Long itemId, ItemDto itemDto) {
-        findUser(userId);
-        Item item = findItem(itemId);
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User:" + userId));
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
+
         throwNotOwnerRequest(userId, item);
 
         if (itemDto.getName() != null && !itemDto.getName().equals(item.getName())) {
@@ -135,25 +158,21 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null && !itemDto.getAvailable().equals(item.getAvailable())) {
             item.setAvailable(itemDto.getAvailable());
         }
+        Item updatedItem = itemRepository.save(item);
 
-        return ItemMapper.toItemDto(itemRepository.save(item));
+        return toItemDto(updatedItem);
     }
 
     @Override
     @Transactional
     public void delete(Long userId, Long itemId) {
-        throwNotOwnerRequest(userId, findItem(itemId));
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
+
+        throwNotOwnerRequest(userId, item);
 
         itemRepository.deleteById(itemId);
-    }
-
-    @Override
-    public Item findItem(Long itemId) {
-        return itemRepository.findById(itemId).orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
-    }
-
-    private User findUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User:" + userId));
     }
 
     private void throwNotOwnerRequest(Long userId, Item item) {

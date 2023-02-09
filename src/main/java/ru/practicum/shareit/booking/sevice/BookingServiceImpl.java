@@ -21,6 +21,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.booking.BookingMapper.toBooking;
+import static ru.practicum.shareit.booking.BookingMapper.toBookingDtoResponse;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,36 +35,51 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDtoResponse create(Long userId, BookingDto bookingDto) {
-        bookingDto.setBookerId(userId);
-        User booker = findUser(userId);
-        Item item = findItem(bookingDto.getItemId());
-        Booking booking = BookingMapper.toBooking(bookingDto);
-        booking.setBooker(booker);
-        booking.setItem(item);
+
+        User booker = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+
+        Item item = itemRepository.findById(bookingDto.getItemId())
+                .orElseThrow(() -> new DataNotFoundException("Item Id=" + bookingDto.getItemId()));
+
         if (userId.equals(item.getOwner().getId())) {
-            throw new DataNotFoundException("User id=" + userId);
+            throw new DataNotFoundException("User id=" + userId + " can not booking item id=" + item.getId());
         }
-        if (item.getAvailable()) {
-            booking.setStatus(Status.WAITING);
-            return BookingMapper.toBookingDtoResponse(bookingRepository.save(booking));
-        } else {
+
+        if (!item.getAvailable()) {
             throw new BadRequestException("Item id=" + item.getId() + " not available");
         }
+
+        bookingDto.setBookerId(userId);
+        Booking booking = toBooking(bookingDto);
+        booking.setBooker(booker);
+        booking.setItem(item);
+        booking.setStatus(Status.WAITING);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        return toBookingDtoResponse(savedBooking);
     }
 
     @Override
     public BookingDtoResponse get(Long userId, Long bookingId) {
-        findUser(userId);
-        Booking booking = findBooking(bookingId);
-        if (userId.equals(booking.getBooker().getId()) || userId.equals(booking.getItem().getOwner().getId())) {
-            return BookingMapper.toBookingDtoResponse(booking);
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new DataNotFoundException("Booking Id=" + bookingId));
+
+        if (!userId.equals(booking.getBooker().getId())
+                && !userId.equals(booking.getItem().getOwner().getId())) {
+            throw new DataNotFoundException("User id= " + userId);
         }
-        throw new DataNotFoundException("User id= " + userId);
+
+        return toBookingDtoResponse(booking);
     }
 
     @Override
     public List<BookingDtoResponse> getByBooker(Long userId, BookingState state) {
-        findUser(userId);
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+
         List<Booking> bookingList;
         switch (state) {
             case ALL:
@@ -94,7 +112,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoResponse> getByOwner(Long userId, BookingState state) {
-        findUser(userId);
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+
         List<Booking> bookingList;
         switch (state) {
             case ALL:
@@ -128,38 +149,32 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDtoResponse confirm(Long userId, Long bookingId, boolean approved) {
-        findUser(userId);
-        Booking booking = findBooking(bookingId);
-        findItem(booking.getItem().getId());
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new DataNotFoundException("Booking Id=" + bookingId));
+
+        itemRepository.findById(booking.getItem().getId())
+                .orElseThrow(() -> new DataNotFoundException("Item Id=" + booking.getItem().getId()));
+
         if (!booking.getStatus().equals(Status.WAITING)) {
             throw new BadRequestException("Booking is checked");
         }
-        if (userId.equals(booking.getItem().getOwner().getId())) {
-            if (approved) {
-                booking.setStatus(Status.APPROVED);
-            } else {
-                booking.setStatus(Status.REJECTED);
-            }
-        } else {
+
+        if (!userId.equals(booking.getItem().getOwner().getId())) {
             throw new DataNotFoundException("User id=" + userId);
+        }
+
+        if (approved) {
+            booking.setStatus(Status.APPROVED);
+        } else {
+            booking.setStatus(Status.REJECTED);
         }
         Booking saveBooking = bookingRepository.save(booking);
 
-        return BookingMapper.toBookingDtoResponse(saveBooking);
+        return toBookingDtoResponse(saveBooking);
     }
 
-    private Booking findBooking(Long bookingId) {
-        return bookingRepository.findById(bookingId).orElseThrow(
-                () -> new DataNotFoundException("Booking Id=" + bookingId));
-    }
-
-    private Item findItem(Long itemId) {
-        return itemRepository.findById(itemId).orElseThrow(
-                () -> new DataNotFoundException("Item Id=" + itemId));
-    }
-
-    private User findUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(
-                () -> new DataNotFoundException("User Id=" + userId));
-    }
 }

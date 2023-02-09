@@ -13,68 +13,68 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByBookerIdOrderByStartDesc(Long bookerId);
 
-    @Query("select b from Booking b " +
-            "where b.booker.id = :userId " +
-            "and b.start < :now " +
-            "and b.end > :now " +
-            "order by b.start desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = :userId " +
+            "AND b.start < :now " +
+            "AND b.end > :now " +
+            "ORDER BY b.start DESC")
     List<Booking> findBookingCurrent(Long userId, LocalDateTime now);
 
-    @Query("select b from Booking b " +
-            "where b.booker.id = :userId " +
-            "and b.end < :now " +
-            "order by b.start desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = :userId " +
+            "AND b.end < :now " +
+            "ORDER BY b.start DESC")
     List<Booking> findBookingPast(Long userId, LocalDateTime now);
 
-    @Query("select b from Booking b " +
-            "where b.booker.id = :userId " +
-            "and b.start > :now " +
-            "order by b.start desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = :userId " +
+            "AND b.start > :now " +
+            "ORDER BY b.start DESC")
     List<Booking> findBookingFuture(Long userId, LocalDateTime now);
 
-    @Query("select b from Booking b " +
-            "where b.booker.id = :userId " +
-            "and b.status = :status " +
-            "order by b.start desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = :userId " +
+            "AND b.status = :status " +
+            "order by b.start DESC")
     List<Booking> findBookingStatus(Long userId, Status status);
 
     List<Booking> findAllByItemOwnerIdOrderByStartDesc(Long bookerId);
 
 
-    @Query("select b from Booking b " +
-            "where b.item.owner.id = :userId " +
-            "and b.start < :now " +
-            "and b.end > :now " +
-            "order by b.start desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.item.owner.id = :userId " +
+            "AND b.start < :now " +
+            "AND b.end > :now " +
+            "ORDER BY b.start DESC")
     List<Booking> findOwnerCurrent(Long userId, LocalDateTime now);
 
-    @Query("select b from Booking b " +
-            "where b.item.owner.id = :userId " +
-            "and b.end < :now " +
-            "order by b.start desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.item.owner.id = :userId " +
+            "AND b.end < :now " +
+            "ORDER BY b.start DESC")
     List<Booking> findOwnerPast(Long userId, LocalDateTime now);
 
-    @Query("select b from Booking b " +
-            "where b.item.owner.id = :userId " +
-            "and b.start > :now " +
-            "order by b.start desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.item.owner.id = :userId " +
+            "AND b.start > :now " +
+            "ORDER BY b.start DESC")
     List<Booking> findOwnerFuture(Long userId, LocalDateTime now);
 
-    @Query("select b from Booking b " +
-            "where b.item.owner.id = :userId " +
-            "and b.status = :status " +
-            "order by b.start desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.item.owner.id = :userId " +
+            "AND b.status = :status " +
+            "ORDER BY b.start DESC")
     List<Booking> findOwnerStatus(Long userId, Status status);
 
-    @Query("select b from Booking b " +
-            "where b.item.id = :itemId " +
-            "and b.end < :now " +
-            "order by b.end desc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.item.id = :itemId " +
+            "AND b.end < :now " +
+            "ORDER BY b.end DESC")
     Booking findLast(Long itemId, LocalDateTime now, PageRequest pageable);
 
-    @Query("select b from Booking b " +
-            "where b.item.id = :itemId " +
-            "and b.start > :now " +
-            "order by b.start asc")
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.item.id = :itemId " +
+            "AND b.start > :now " +
+            "ORDER BY b.start ASC")
     Booking findNext(Long itemId, LocalDateTime now, PageRequest pageable);
 }
