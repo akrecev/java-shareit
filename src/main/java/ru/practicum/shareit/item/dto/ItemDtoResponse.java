@@ -1,10 +1,10 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.*;
-import ru.practicum.shareit.utility.Create;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.request.model.ItemRequest;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -12,26 +12,29 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ItemDto {
+public class ItemDtoResponse {
 
     private Long id;
 
-    @NotBlank(groups = {Create.class})
     private String name;
 
-    @NotBlank(groups = {Create.class})
     private String description;
 
-    @NotNull(groups = {Create.class})
     private Boolean available;
 
-    private Long request;
+    private BookingDto lastBooking;
+
+    private BookingDto nextBooking;
+
+    private List<CommentDtoResponse> comments;
+
+    private ItemRequest request;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ItemDto itemDto = (ItemDto) o;
+        ItemDtoResponse itemDto = (ItemDtoResponse) o;
         return id.equals(itemDto.id);
     }
 

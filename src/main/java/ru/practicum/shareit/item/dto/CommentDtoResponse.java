@@ -1,31 +1,33 @@
-package ru.practicum.shareit.request.dto;
+package ru.practicum.shareit.item.dto;
 
 import lombok.*;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ItemRequestDto {
+public class CommentDtoResponse {
 
     private Long id;
-    private String description;
-    private User requestor;
+
+    private String text;
+
+    private Item item;
+
+    private String authorName;
+
     private LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ItemRequestDto that = (ItemRequestDto) o;
+        CommentDtoResponse that = (CommentDtoResponse) o;
         return id.equals(that.id);
     }
 

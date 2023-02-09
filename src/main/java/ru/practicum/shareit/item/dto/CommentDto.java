@@ -4,7 +4,6 @@ import lombok.*;
 import ru.practicum.shareit.utility.Create;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Getter
@@ -12,27 +11,23 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ItemDto {
+public class CommentDto {
 
     private Long id;
 
     @NotBlank(groups = {Create.class})
-    private String name;
+    private String text;
 
-    @NotBlank(groups = {Create.class})
-    private String description;
+    private Long itemId;
 
-    @NotNull(groups = {Create.class})
-    private Boolean available;
-
-    private Long request;
+    private Long authorId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ItemDto itemDto = (ItemDto) o;
-        return id.equals(itemDto.id);
+        CommentDto that = (CommentDto) o;
+        return id.equals(that.id);
     }
 
     @Override

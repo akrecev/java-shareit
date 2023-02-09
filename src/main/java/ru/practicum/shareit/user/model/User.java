@@ -2,8 +2,11 @@ package ru.practicum.shareit.user.model;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,8 +14,14 @@ import java.util.Objects;
 @ToString
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, length = 512, unique = true)
     private String email;
 
     @Override
