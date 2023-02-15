@@ -106,7 +106,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDtoResponse> getUserItems(Long userId) {
 
-        return itemRepository.findAllByOwnerId(userId).stream()
+        return itemRepository.findAllByOwnerIdOrderById(userId).stream()
                 .map(ItemMapper::toItemDtoResponse)
                 .peek(itemDtoResponse -> itemDtoResponse.setLastBooking(
                         toBookingDto(
