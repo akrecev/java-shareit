@@ -10,9 +10,12 @@ import ru.practicum.shareit.utility.Create;
 import ru.practicum.shareit.utility.Update;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import javax.validation.constraints.Positive;
+
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
     private final UserService userService;
 
@@ -22,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto get(@PathVariable Long id) {
+    public UserDto get(@Positive @PathVariable Long id) {
         return userService.get(id);
     }
 
@@ -32,12 +35,12 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable Long id, @Validated({Update.class}) @RequestBody UserDto userDto) {
+    public UserDto update(@Positive @PathVariable Long id, @Validated({Update.class}) @RequestBody UserDto userDto) {
         return userService.update(id, userDto);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@Positive @PathVariable Long id) {
         userService.delete(id);
     }
 

@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -17,8 +18,11 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.utility.MyPageRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,6 +42,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository requestRepository;
 
 
     @Override
@@ -47,7 +52,12 @@ public class ItemServiceImpl implements ItemService {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("User:" + userId));
 
-        Item savedItem = itemRepository.save(toItem(itemDto, owner));
+        ItemRequest request = null;
+        if (itemDto.getRequestId() != null) {
+            request = requestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new DataNotFoundException("Request:" + itemDto.getRequestId()));
+        }
+        Item savedItem = itemRepository.save(toItem(itemDto, owner, request));
 
         return toItemDto(savedItem);
     }
@@ -62,7 +72,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
 
-        bookingRepository.findBookingPast(userId, LocalDateTime.now())
+        bookingRepository.findBookingPast(userId, LocalDateTime.now(),
+                        new MyPageRequest(0, 20, Sort.unsorted()))
                 .stream()
                 .filter(booking -> booking.getItem().getId().equals(itemId))
                 .findFirst()
@@ -104,9 +115,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoResponse> getUserItems(Long userId) {
+    public List<ItemDtoResponse> getUserItems(Long userId, Integer from, Integer size) {
 
-        return itemRepository.findAllByOwnerIdOrderById(userId).stream()
+        return itemRepository
+                .findAllByOwnerIdOrderById(userId, new MyPageRequest(from, size, Sort.unsorted()))
+                .stream()
                 .map(ItemMapper::toItemDtoResponse)
                 .peek(itemDtoResponse -> itemDtoResponse.setLastBooking(
                         toBookingDto(
@@ -124,10 +137,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getSearchItems(String searchText) {
+    public List<ItemDto> getSearchItems(String searchText, Integer from, Integer size) {
         List<ItemDto> result = new ArrayList<>();
         if (!searchText.isBlank()) {
-            result = itemRepository.search(searchText)
+            result = itemRepository.search(searchText, new MyPageRequest(from, size, Sort.unsorted()))
                     .stream()
                     .filter(Item::getAvailable)
                     .map(ItemMapper::toItemDto)

@@ -7,9 +7,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @Entity
 @Table(name = "requests")
 @Getter
@@ -31,7 +28,7 @@ public class ItemRequest {
     private User requestor;
 
     @Column(nullable = false)
-    private LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {
