@@ -7,7 +7,6 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "bookings")
@@ -16,6 +15,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
+@EqualsAndHashCode
 public class Booking {
 
     @Id
@@ -40,16 +41,4 @@ public class Booking {
     @Column(nullable = false)
     private Status status;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Booking booking = (Booking) o;
-        return id.equals(booking.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

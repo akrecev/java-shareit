@@ -71,7 +71,7 @@ public class BookingServiceImpl implements BookingService {
 
         if (!userId.equals(booking.getBooker().getId())
                 && !userId.equals(booking.getItem().getOwner().getId())) {
-            throw new DataNotFoundException("User id= " + userId);
+            throw new DataNotFoundException("User id=" + userId);
         }
 
         return toBookingDtoResponse(booking);
@@ -179,7 +179,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         if (!userId.equals(booking.getItem().getOwner().getId())) {
-            throw new DataNotFoundException("User id=" + userId);
+            throw new DataNotFoundException("User id=" + userId + " is not owner of item");
         }
 
         if (approved) {

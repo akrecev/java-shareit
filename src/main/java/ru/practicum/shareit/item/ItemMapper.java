@@ -22,7 +22,7 @@ public class ItemMapper {
                 null,
                 null,
                 new ArrayList<>(),
-                null
+                item.getRequest()
         );
     }
 

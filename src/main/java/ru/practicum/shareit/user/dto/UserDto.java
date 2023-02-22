@@ -6,13 +6,13 @@ import ru.practicum.shareit.utility.Create;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class UserDto {
 
     private Long id;
@@ -24,16 +24,4 @@ public class UserDto {
     @Email(groups = {Create.class})
     private String email;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserDto userDto = (UserDto) o;
-        return id.equals(userDto.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

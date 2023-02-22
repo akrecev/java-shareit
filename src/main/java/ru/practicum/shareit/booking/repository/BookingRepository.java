@@ -39,7 +39,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start DESC")
     Page<Booking> findBookingStatus(Long userId, Status status, Pageable pageable);
 
-    Page<Booking> findAllByItemOwnerIdOrderByStartDesc(Long bookerId, Pageable pageable);
+    Page<Booking> findAllByItemOwnerIdOrderByStartDesc(Long ownerId, Pageable pageable);
 
 
     @Query("SELECT b FROM Booking b " +

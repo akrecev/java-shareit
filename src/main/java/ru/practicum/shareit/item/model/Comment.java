@@ -4,7 +4,7 @@ import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
@@ -13,6 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class Comment {
 
     @Id
@@ -30,16 +31,6 @@ public class Comment {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment that = (Comment) o;
-        return id.equals(that.id);
-    }
+    private LocalDateTime created;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

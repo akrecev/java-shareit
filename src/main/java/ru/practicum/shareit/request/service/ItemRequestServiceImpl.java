@@ -10,7 +10,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.ItemRequestMapper;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
@@ -29,38 +28,38 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
 
     @Override
-    public ItemRequestDtoResponse create(Long userId, ItemRequestDto requestDto) {
+    public ItemRequestDto create(Long userId, ItemRequestDto requestDto) {
         User requestor = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User:" + userId));
+                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         ItemRequest request = ItemRequestMapper.toRequest(requestDto);
         request.setRequestor(requestor);
         request.setCreated(LocalDateTime.now());
         ItemRequest savedRequest = requestRepository.save(request);
 
-        return ItemRequestMapper.toRequestDtoResponse(savedRequest);
+        return ItemRequestMapper.toRequestDto(savedRequest);
     }
 
     @Override
-    public ItemRequestDtoResponse getRequest(Long userId, Long requestId) {
+    public ItemRequestDto getRequest(Long userId, Long requestId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         ItemRequest request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new DataNotFoundException("Request:" + requestId));
+                .orElseThrow(() -> new DataNotFoundException("Request Id=" + requestId));
 
         List<ItemDto> itemDtos = itemRepository.findAllByRequestIdOrderById(requestId)
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
-        ItemRequestDtoResponse requestDtoResponse = ItemRequestMapper.toRequestDtoResponse(request);
+        ItemRequestDto requestDtoResponse = ItemRequestMapper.toRequestDto(request);
         requestDtoResponse.setItems(itemDtos);
 
         return requestDtoResponse;
     }
 
     @Override
-    public List<ItemRequestDtoResponse> getUserRequests(Long userId, int from, int size) {
+    public List<ItemRequestDto> getUserRequests(Long userId, int from, int size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
@@ -68,7 +67,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .findAllByRequestorId(userId, new MyPageRequest(from, size, Sort.by("id")));
 
         return requests.stream()
-                .map(ItemRequestMapper::toRequestDtoResponse)
+                .map(ItemRequestMapper::toRequestDto)
                 .peek(itemRequestDtoResponse -> itemRequestDtoResponse.setItems(
                         itemRepository.findAllByRequestIdOrderById(itemRequestDtoResponse.getId())
                                 .stream()
@@ -79,7 +78,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDtoResponse> getAllRequests(Long userId, int from, int size) {
+    public List<ItemRequestDto> getAllRequests(Long userId, int from, int size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
@@ -87,7 +86,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .findAllByRequestorIdNot(userId, new MyPageRequest(from, size, Sort.by("created")));
 
         return requests.stream()
-                .map(ItemRequestMapper::toRequestDtoResponse)
+                .map(ItemRequestMapper::toRequestDto)
                 .peek(itemRequestDtoResponse -> itemRequestDtoResponse.setItems(
                         itemRepository.findAllByRequestIdOrderById(itemRequestDtoResponse.getId())
                                 .stream()

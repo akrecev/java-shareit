@@ -5,7 +5,6 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "requests")
@@ -14,6 +13,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
+@EqualsAndHashCode
 public class ItemRequest {
 
     @Id
@@ -30,16 +31,4 @@ public class ItemRequest {
     @Column(nullable = false)
     private LocalDateTime created;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ItemRequest that = (ItemRequest) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

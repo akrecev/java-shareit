@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -12,6 +11,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
+@EqualsAndHashCode
 public class User {
 
     @Id
@@ -24,16 +25,4 @@ public class User {
     @Column(nullable = false, length = 512, unique = true)
     private String email;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

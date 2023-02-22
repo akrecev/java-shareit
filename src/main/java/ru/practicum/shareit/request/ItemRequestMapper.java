@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.ArrayList;
@@ -11,11 +10,11 @@ public class ItemRequestMapper {
         throw new IllegalStateException("Utility class");
     }
 
-    public static ItemRequestDtoResponse toRequestDtoResponse(ItemRequest request) {
+    public static ItemRequestDto toRequestDto(ItemRequest request) {
         if (request == null) {
             return null;
         }
-        return new ItemRequestDtoResponse(
+        return new ItemRequestDto(
                 request.getId(),
                 request.getDescription(),
                 request.getRequestor(),

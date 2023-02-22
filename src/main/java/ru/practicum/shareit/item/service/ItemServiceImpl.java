@@ -50,12 +50,12 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(Long userId, ItemDto itemDto) {
 
         User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User:" + userId));
+                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         ItemRequest request = null;
         if (itemDto.getRequestId() != null) {
             request = requestRepository.findById(itemDto.getRequestId())
-                    .orElseThrow(() -> new DataNotFoundException("Request:" + itemDto.getRequestId()));
+                    .orElseThrow(() -> new DataNotFoundException("Request Id=" + itemDto.getRequestId()));
         }
         Item savedItem = itemRepository.save(toItem(itemDto, owner, request));
 
@@ -67,10 +67,10 @@ public class ItemServiceImpl implements ItemService {
     public CommentDtoResponse commentCreate(Long userId, Long itemId, CommentDto commentDto) {
 
         User author = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User:" + userId));
+                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
+                .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
 
         bookingRepository.findBookingPast(userId, LocalDateTime.now(),
                         new MyPageRequest(0, 20, Sort.unsorted()))
@@ -81,6 +81,7 @@ public class ItemServiceImpl implements ItemService {
         Comment comment = toComment(commentDto);
         comment.setAuthor(author);
         comment.setItem(item);
+        comment.setCreated(LocalDateTime.now());
         Comment savedComment = commentRepository.save(comment);
 
         return toCommentDtoResponse(savedComment);
@@ -90,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDtoResponse get(Long userId, Long itemId) {
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
+                .orElseThrow(() -> new DataNotFoundException("Item id=" + itemId));
 
         ItemDtoResponse responseItem = toItemDtoResponse(item);
         if (userId.equals(item.getOwner().getId())) {
@@ -155,10 +156,10 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto update(Long userId, Long itemId, ItemDto itemDto) {
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User:" + userId));
+                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
+                .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
 
         throwNotOwnerRequest(userId, item);
 
@@ -181,7 +182,7 @@ public class ItemServiceImpl implements ItemService {
     public void delete(Long userId, Long itemId) {
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Item:" + itemId));
+                .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
 
         throwNotOwnerRequest(userId, item);
 
