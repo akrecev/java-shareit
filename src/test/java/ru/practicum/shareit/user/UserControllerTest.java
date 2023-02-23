@@ -51,14 +51,14 @@ class UserControllerTest {
                 .thenReturn(userDto);
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
-                .andExpect(jsonPath("$.name", is(userDto.getName())))
-                .andExpect(jsonPath("$.email", is(userDto.getEmail())));
+                                          .content(mapper.writeValueAsString(userDto))
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
+           .andExpect(jsonPath("$.name", is(userDto.getName())))
+           .andExpect(jsonPath("$.email", is(userDto.getEmail())));
 
         verify(userService, times(1))
                 .create(userDto);
@@ -74,13 +74,13 @@ class UserControllerTest {
                 .thenThrow(new BadRequestException("Invalid name"));
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof MethodArgumentNotValidException));
+                                          .content(mapper.writeValueAsString(userDto))
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isBadRequest())
+           .andExpect(result -> assertTrue(result.getResolvedException()
+                   instanceof MethodArgumentNotValidException));
 
         verify(userService, never())
                 .create(any());
@@ -97,13 +97,13 @@ class UserControllerTest {
                 .thenThrow(new BadRequestException("Invalid email"));
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof MethodArgumentNotValidException));
+                                          .content(mapper.writeValueAsString(userDto))
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isBadRequest())
+           .andExpect(result -> assertTrue(result.getResolvedException()
+                   instanceof MethodArgumentNotValidException));
 
         verify(userService, never())
                 .create(any());
@@ -115,13 +115,13 @@ class UserControllerTest {
                 .thenReturn(userDto);
 
         mvc.perform(MockMvcRequestBuilders.get(PATH_WITH_ID)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
-                .andExpect(jsonPath("$.name", is(userDto.getName())))
-                .andExpect(jsonPath("$.email", is(userDto.getEmail())));
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
+           .andExpect(jsonPath("$.name", is(userDto.getName())))
+           .andExpect(jsonPath("$.email", is(userDto.getEmail())));
 
         verify(userService, times(1))
                 .get(anyLong());
@@ -133,13 +133,13 @@ class UserControllerTest {
                 .thenReturn(Collections.singletonList(userDto));
 
         mvc.perform(MockMvcRequestBuilders.get(PATH)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(userDto.getId()), Long.class))
-                .andExpect(jsonPath("$[0].name", is(userDto.getName())))
-                .andExpect(jsonPath("$[0].email", is(userDto.getEmail())));
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$[0].id", is(userDto.getId()), Long.class))
+           .andExpect(jsonPath("$[0].name", is(userDto.getName())))
+           .andExpect(jsonPath("$[0].email", is(userDto.getEmail())));
 
         verify(userService, times(1))
                 .getAll();
@@ -156,14 +156,14 @@ class UserControllerTest {
                 .thenReturn(updateUser);
 
         mvc.perform(MockMvcRequestBuilders.patch(PATH_WITH_ID)
-                        .content(mapper.writeValueAsString(updateUser))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(updateUser.getId()), Long.class))
-                .andExpect(jsonPath("$.name", is(updateUser.getName())))
-                .andExpect(jsonPath("$.email", is(updateUser.getEmail())));
+                                          .content(mapper.writeValueAsString(updateUser))
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(updateUser.getId()), Long.class))
+           .andExpect(jsonPath("$.name", is(updateUser.getName())))
+           .andExpect(jsonPath("$.email", is(updateUser.getEmail())));
 
         verify(userService, times(1))
                 .update(anyLong(), any(UserDto.class));
@@ -172,6 +172,6 @@ class UserControllerTest {
     @Test
     void testDeleteUserById() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete(PATH_WITH_ID))
-                .andExpect(status().isOk());
+           .andExpect(status().isOk());
     }
 }

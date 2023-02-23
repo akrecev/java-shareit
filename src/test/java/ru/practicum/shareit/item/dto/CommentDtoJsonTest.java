@@ -26,13 +26,13 @@ class CommentDtoJsonTest {
         JsonContent<CommentDto> result = json.write(commentDto);
 
         assertThat(result).extractingJsonPathNumberValue("$.id")
-                .isEqualTo(1);
+                          .isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.text")
-                .isEqualTo(commentDto.getText());
+                          .isEqualTo(commentDto.getText());
         assertThat(result).extractingJsonPathNumberValue("$.itemId")
-                .isEqualTo(1);
+                          .isEqualTo(1);
         assertThat(result).extractingJsonPathNumberValue("$.authorId")
-                .isEqualTo(1);
+                          .isEqualTo(1);
 
     }
 

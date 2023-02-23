@@ -41,7 +41,7 @@ public class BookingController {
             @Positive @RequestParam(value = "size", defaultValue = "10") Integer size
     ) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new BadRequestException("Unknown state: " + stateParam));
+                                         .orElseThrow(() -> new BadRequestException("Unknown state: " + stateParam));
 
         return bookingService.getByBooker(userId, state, from, size);
     }
@@ -54,7 +54,7 @@ public class BookingController {
             @Positive @RequestParam(value = "size", defaultValue = "10") Integer size
     ) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new BadRequestException("Unknown state: " + stateParam));
+                                         .orElseThrow(() -> new BadRequestException("Unknown state: " + stateParam));
 
         return bookingService.getByOwner(userId, state, from, size);
     }

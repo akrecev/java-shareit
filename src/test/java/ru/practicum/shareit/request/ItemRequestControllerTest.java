@@ -57,17 +57,17 @@ class ItemRequestControllerTest {
                 .thenReturn(request);
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(request))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(request.getId()), Long.class))
-                .andExpect(jsonPath("$.description", is(request.getDescription())))
-                .andExpect(jsonPath("$.requestor.id", is(request.getId()), Long.class))
-                .andExpect(jsonPath("$.created", is("2023-01-01T01:01:00")))
-                .andExpect(jsonPath("$.items", is(request.getItems())));
+                                          .content(mapper.writeValueAsString(request))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(request.getId()), Long.class))
+           .andExpect(jsonPath("$.description", is(request.getDescription())))
+           .andExpect(jsonPath("$.requestor.id", is(request.getId()), Long.class))
+           .andExpect(jsonPath("$.created", is("2023-01-01T01:01:00")))
+           .andExpect(jsonPath("$.items", is(request.getItems())));
 
         verify(requestService, times(1))
                 .create(1L, request);
@@ -87,14 +87,14 @@ class ItemRequestControllerTest {
                 .thenThrow(new BadRequestException("Invalid description"));
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(requestEmpty))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof MethodArgumentNotValidException));
+                                          .content(mapper.writeValueAsString(requestEmpty))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isBadRequest())
+           .andExpect(result -> assertTrue(result.getResolvedException()
+                   instanceof MethodArgumentNotValidException));
 
         verify(requestService, never())
                 .create(any(), any());
@@ -106,16 +106,16 @@ class ItemRequestControllerTest {
                 .thenReturn(request);
 
         mvc.perform(MockMvcRequestBuilders.get(PATH_WITH_ID)
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(request.getId()), Long.class))
-                .andExpect(jsonPath("$.description", is(request.getDescription())))
-                .andExpect(jsonPath("$.requestor.id", is(request.getId()), Long.class))
-                .andExpect(jsonPath("$.created", is("2023-01-01T01:01:00")))
-                .andExpect(jsonPath("$.items", is(request.getItems())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(request.getId()), Long.class))
+           .andExpect(jsonPath("$.description", is(request.getDescription())))
+           .andExpect(jsonPath("$.requestor.id", is(request.getId()), Long.class))
+           .andExpect(jsonPath("$.created", is("2023-01-01T01:01:00")))
+           .andExpect(jsonPath("$.items", is(request.getItems())));
 
         verify(requestService, times(1))
                 .getRequest(anyLong(), anyLong());
@@ -127,16 +127,16 @@ class ItemRequestControllerTest {
                 .thenReturn(List.of(request));
 
         mvc.perform(MockMvcRequestBuilders.get(PATH)
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(request.getId()), Long.class))
-                .andExpect(jsonPath("$[0].description", is(request.getDescription())))
-                .andExpect(jsonPath("$[0].requestor.id", is(request.getId()), Long.class))
-                .andExpect(jsonPath("$[0].created", is("2023-01-01T01:01:00")))
-                .andExpect(jsonPath("$[0].items", is(request.getItems())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$[0].id", is(request.getId()), Long.class))
+           .andExpect(jsonPath("$[0].description", is(request.getDescription())))
+           .andExpect(jsonPath("$[0].requestor.id", is(request.getId()), Long.class))
+           .andExpect(jsonPath("$[0].created", is("2023-01-01T01:01:00")))
+           .andExpect(jsonPath("$[0].items", is(request.getItems())));
 
         verify(requestService, times(1))
                 .getUserRequests(anyLong(), anyInt(), anyInt());
@@ -148,16 +148,16 @@ class ItemRequestControllerTest {
                 .thenReturn(Collections.singletonList(request));
 
         mvc.perform(MockMvcRequestBuilders.get(PATH_WITH_ALL)
-                        .header("X-Sharer-User-Id", 2L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(request.getId()), Long.class))
-                .andExpect(jsonPath("$[0].description", is(request.getDescription())))
-                .andExpect(jsonPath("$[0].requestor.id", is(request.getId()), Long.class))
-                .andExpect(jsonPath("$[0].created", is("2023-01-01T01:01:00")))
-                .andExpect(jsonPath("$[0].items", is(request.getItems())));
+                                          .header("X-Sharer-User-Id", 2L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$[0].id", is(request.getId()), Long.class))
+           .andExpect(jsonPath("$[0].description", is(request.getDescription())))
+           .andExpect(jsonPath("$[0].requestor.id", is(request.getId()), Long.class))
+           .andExpect(jsonPath("$[0].created", is("2023-01-01T01:01:00")))
+           .andExpect(jsonPath("$[0].items", is(request.getItems())));
 
         verify(requestService, times(1))
                 .getAllRequests(anyLong(), anyInt(), anyInt());

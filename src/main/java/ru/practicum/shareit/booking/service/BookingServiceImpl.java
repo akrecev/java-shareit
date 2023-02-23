@@ -40,10 +40,10 @@ public class BookingServiceImpl implements BookingService {
     public BookingDtoResponse create(Long userId, BookingDto bookingDto) {
 
         User booker = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+                                    .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         Item item = itemRepository.findById(bookingDto.getItemId())
-                .orElseThrow(() -> new DataNotFoundException("Item Id=" + bookingDto.getItemId()));
+                                  .orElseThrow(() -> new DataNotFoundException("Item Id=" + bookingDto.getItemId()));
 
         if (userId.equals(item.getOwner().getId())) {
             throw new DataNotFoundException("User id=" + userId + " can not booking item id=" + item.getId());
@@ -67,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDtoResponse get(Long userId, Long bookingId) {
 
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new DataNotFoundException("Booking Id=" + bookingId));
+                                           .orElseThrow(() -> new DataNotFoundException("Booking Id=" + bookingId));
 
         if (!userId.equals(booking.getBooker().getId())
                 && !userId.equals(booking.getItem().getOwner().getId())) {
@@ -81,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDtoResponse> getByBooker(Long userId, BookingState state, int from, int size) {
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+                      .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         Page<Booking> bookingList;
         switch (state) {
@@ -123,7 +123,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDtoResponse> getByOwner(Long userId, BookingState state, int from, int size) {
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+                      .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         Page<Booking> bookingList;
         switch (state) {
@@ -166,13 +166,13 @@ public class BookingServiceImpl implements BookingService {
     public BookingDtoResponse confirm(Long userId, Long bookingId, boolean approved) {
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+                      .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new DataNotFoundException("Booking Id=" + bookingId));
+                                           .orElseThrow(() -> new DataNotFoundException("Booking Id=" + bookingId));
 
         itemRepository.findById(booking.getItem().getId())
-                .orElseThrow(() -> new DataNotFoundException("Item Id=" + booking.getItem().getId()));
+                      .orElseThrow(() -> new DataNotFoundException("Item Id=" + booking.getItem().getId()));
 
         if (!booking.getStatus().equals(Status.WAITING)) {
             throw new BadRequestException("Booking is checked");

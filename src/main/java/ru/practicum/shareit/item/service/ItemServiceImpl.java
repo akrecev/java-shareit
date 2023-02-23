@@ -50,12 +50,13 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(Long userId, ItemDto itemDto) {
 
         User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+                                   .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         ItemRequest request = null;
         if (itemDto.getRequestId() != null) {
             request = requestRepository.findById(itemDto.getRequestId())
-                    .orElseThrow(() -> new DataNotFoundException("Request Id=" + itemDto.getRequestId()));
+                                       .orElseThrow(() -> new DataNotFoundException(
+                                               "Request Id=" + itemDto.getRequestId()));
         }
         Item savedItem = itemRepository.save(toItem(itemDto, owner, request));
 
@@ -67,17 +68,18 @@ public class ItemServiceImpl implements ItemService {
     public CommentDtoResponse commentCreate(Long userId, Long itemId, CommentDto commentDto) {
 
         User author = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+                                    .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
+                                  .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
 
         bookingRepository.findBookingPast(userId, LocalDateTime.now(),
-                        new MyPageRequest(0, 20, Sort.unsorted()))
-                .stream()
-                .filter(booking -> booking.getItem().getId().equals(itemId))
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException("User id=" + userId + " did not use item id=" + itemId));
+                                 new MyPageRequest(0, 20, Sort.unsorted()))
+                         .stream()
+                         .filter(booking -> booking.getItem().getId().equals(itemId))
+                         .findFirst()
+                         .orElseThrow(() -> new BadRequestException(
+                                 "User id=" + userId + " did not use item id=" + itemId));
         Comment comment = toComment(commentDto);
         comment.setAuthor(author);
         comment.setItem(item);
@@ -91,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDtoResponse get(Long userId, Long itemId) {
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Item id=" + itemId));
+                                  .orElseThrow(() -> new DataNotFoundException("Item id=" + itemId));
 
         ItemDtoResponse responseItem = toItemDtoResponse(item);
         if (userId.equals(item.getOwner().getId())) {
@@ -107,9 +109,9 @@ public class ItemServiceImpl implements ItemService {
             );
         }
         List<CommentDtoResponse> commentList = commentRepository.findAllByItemId(itemId)
-                .stream()
-                .map(CommentMapper::toCommentDtoResponse)
-                .collect(Collectors.toList());
+                                                                .stream()
+                                                                .map(CommentMapper::toCommentDtoResponse)
+                                                                .collect(Collectors.toList());
         responseItem.setComments(commentList);
 
         return responseItem;
@@ -142,10 +144,10 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> result = new ArrayList<>();
         if (!searchText.isBlank()) {
             result = itemRepository.search(searchText, new MyPageRequest(from, size, Sort.unsorted()))
-                    .stream()
-                    .filter(Item::getAvailable)
-                    .map(ItemMapper::toItemDto)
-                    .collect(Collectors.toList());
+                                   .stream()
+                                   .filter(Item::getAvailable)
+                                   .map(ItemMapper::toItemDto)
+                                   .collect(Collectors.toList());
         }
 
         return result;
@@ -156,10 +158,10 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto update(Long userId, Long itemId, ItemDto itemDto) {
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
+                      .orElseThrow(() -> new DataNotFoundException("User Id=" + userId));
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
+                                  .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
 
         throwNotOwnerRequest(userId, item);
 
@@ -182,7 +184,7 @@ public class ItemServiceImpl implements ItemService {
     public void delete(Long userId, Long itemId) {
 
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
+                                  .orElseThrow(() -> new DataNotFoundException("Item Id=" + itemId));
 
         throwNotOwnerRequest(userId, item);
 

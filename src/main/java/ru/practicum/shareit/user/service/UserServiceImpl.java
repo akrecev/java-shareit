@@ -34,16 +34,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto get(Long id) {
         return userRepository.findById(id)
-                .map(UserMapper::toUserDto)
-                .orElseThrow(() -> new DataNotFoundException("id:" + id));
+                             .map(UserMapper::toUserDto)
+                             .orElseThrow(() -> new DataNotFoundException("id:" + id));
     }
 
     @Override
     public List<UserDto> getAll() {
         return userRepository.findAll(PageRequest.of(0, 10))
-                .stream()
-                .map(UserMapper::toUserDto)
-                .collect(Collectors.toList());
+                             .stream()
+                             .map(UserMapper::toUserDto)
+                             .collect(Collectors.toList());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     public UserDto update(Long id, UserDto userDto) {
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("id:" + id));
+                                  .orElseThrow(() -> new DataNotFoundException("id:" + id));
 
         if (userDto.getName() != null && !userDto.getName().equals(user.getName())) {
             user.setName(userDto.getName());

@@ -27,15 +27,15 @@ class ItemDtoJsonTest {
         JsonContent<ItemDto> result = json.write(itemDto);
 
         assertThat(result).extractingJsonPathNumberValue("$.id")
-                .isEqualTo(1);
+                          .isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.name")
-                .isEqualTo(itemDto.getName());
+                          .isEqualTo(itemDto.getName());
         assertThat(result).extractingJsonPathStringValue("$.description")
-                .isEqualTo(itemDto.getDescription());
+                          .isEqualTo(itemDto.getDescription());
         assertThat(result).extractingJsonPathBooleanValue("$.available")
-                .isEqualTo(true);
+                          .isEqualTo(true);
         assertThat(result).extractingJsonPathNumberValue("$.requestId")
-                .isEqualTo(1);
+                          .isEqualTo(1);
     }
 
 }

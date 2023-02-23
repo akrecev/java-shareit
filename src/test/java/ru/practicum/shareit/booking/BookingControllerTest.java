@@ -68,18 +68,18 @@ class BookingControllerTest {
                 .thenReturn(bookingResponse);
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(booking))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(bookingResponse.getId()), Long.class))
-                .andExpect(jsonPath("$.start", is("2024-01-01T01:01:00")))
-                .andExpect(jsonPath("$.end", is("2025-01-01T01:01:00")))
-                .andExpect(jsonPath("$.item.id", is(bookingResponse.getItem().getId()), Long.class))
-                .andExpect(jsonPath("$.booker.id", is(bookingResponse.getBooker().getId()), Long.class))
-                .andExpect(jsonPath("$.status", is(bookingResponse.getStatus().toString())));
+                                          .content(mapper.writeValueAsString(booking))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(bookingResponse.getId()), Long.class))
+           .andExpect(jsonPath("$.start", is("2024-01-01T01:01:00")))
+           .andExpect(jsonPath("$.end", is("2025-01-01T01:01:00")))
+           .andExpect(jsonPath("$.item.id", is(bookingResponse.getItem().getId()), Long.class))
+           .andExpect(jsonPath("$.booker.id", is(bookingResponse.getBooker().getId()), Long.class))
+           .andExpect(jsonPath("$.status", is(bookingResponse.getStatus().toString())));
 
         verify(bookingService, times(1))
                 .create(1L, booking);
@@ -100,14 +100,14 @@ class BookingControllerTest {
                 .thenThrow(new BadRequestException("Invalid item id"));
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(bookingItemIdNull))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof MethodArgumentNotValidException));
+                                          .content(mapper.writeValueAsString(bookingItemIdNull))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isBadRequest())
+           .andExpect(result -> assertTrue(result.getResolvedException()
+                   instanceof MethodArgumentNotValidException));
 
         verify(bookingService, never())
                 .create(any(), any());
@@ -128,14 +128,14 @@ class BookingControllerTest {
                 .thenThrow(new BadRequestException("End before start"));
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(bookingEndBeforeStart))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof MethodArgumentNotValidException));
+                                          .content(mapper.writeValueAsString(bookingEndBeforeStart))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isBadRequest())
+           .andExpect(result -> assertTrue(result.getResolvedException()
+                   instanceof MethodArgumentNotValidException));
 
         verify(bookingService, never())
                 .create(any(), any());
@@ -147,17 +147,17 @@ class BookingControllerTest {
                 .thenReturn(bookingResponse);
 
         mvc.perform(MockMvcRequestBuilders.get(PATH_WITH_ID)
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(bookingResponse.getId()), Long.class))
-                .andExpect(jsonPath("$.start", is("2024-01-01T01:01:00")))
-                .andExpect(jsonPath("$.end", is("2025-01-01T01:01:00")))
-                .andExpect(jsonPath("$.item.id", is(bookingResponse.getItem().getId()), Long.class))
-                .andExpect(jsonPath("$.booker.id", is(bookingResponse.getBooker().getId()), Long.class))
-                .andExpect(jsonPath("$.status", is(bookingResponse.getStatus().toString())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(bookingResponse.getId()), Long.class))
+           .andExpect(jsonPath("$.start", is("2024-01-01T01:01:00")))
+           .andExpect(jsonPath("$.end", is("2025-01-01T01:01:00")))
+           .andExpect(jsonPath("$.item.id", is(bookingResponse.getItem().getId()), Long.class))
+           .andExpect(jsonPath("$.booker.id", is(bookingResponse.getBooker().getId()), Long.class))
+           .andExpect(jsonPath("$.status", is(bookingResponse.getStatus().toString())));
 
         verify(bookingService, times(1))
                 .get(anyLong(), anyLong());
@@ -169,17 +169,17 @@ class BookingControllerTest {
                 .thenReturn(List.of(bookingResponse));
 
         mvc.perform(MockMvcRequestBuilders.get(PATH)
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(bookingResponse.getId()), Long.class))
-                .andExpect(jsonPath("$[0].start", is("2024-01-01T01:01:00")))
-                .andExpect(jsonPath("$[0].end", is("2025-01-01T01:01:00")))
-                .andExpect(jsonPath("$[0].item.id", is(bookingResponse.getItem().getId()), Long.class))
-                .andExpect(jsonPath("$[0].booker.id", is(bookingResponse.getBooker().getId()), Long.class))
-                .andExpect(jsonPath("$[0].status", is(bookingResponse.getStatus().toString())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$[0].id", is(bookingResponse.getId()), Long.class))
+           .andExpect(jsonPath("$[0].start", is("2024-01-01T01:01:00")))
+           .andExpect(jsonPath("$[0].end", is("2025-01-01T01:01:00")))
+           .andExpect(jsonPath("$[0].item.id", is(bookingResponse.getItem().getId()), Long.class))
+           .andExpect(jsonPath("$[0].booker.id", is(bookingResponse.getBooker().getId()), Long.class))
+           .andExpect(jsonPath("$[0].status", is(bookingResponse.getStatus().toString())));
 
         verify(bookingService, times(1))
                 .getByBooker(anyLong(), any(), anyInt(), anyInt());
@@ -191,17 +191,17 @@ class BookingControllerTest {
                 .thenReturn(List.of(bookingResponse));
 
         mvc.perform(MockMvcRequestBuilders.get(PATH_WITH_OWNER)
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(bookingResponse.getId()), Long.class))
-                .andExpect(jsonPath("$[0].start", is("2024-01-01T01:01:00")))
-                .andExpect(jsonPath("$[0].end", is("2025-01-01T01:01:00")))
-                .andExpect(jsonPath("$[0].item.id", is(bookingResponse.getItem().getId()), Long.class))
-                .andExpect(jsonPath("$[0].booker.id", is(bookingResponse.getBooker().getId()), Long.class))
-                .andExpect(jsonPath("$[0].status", is(bookingResponse.getStatus().toString())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$[0].id", is(bookingResponse.getId()), Long.class))
+           .andExpect(jsonPath("$[0].start", is("2024-01-01T01:01:00")))
+           .andExpect(jsonPath("$[0].end", is("2025-01-01T01:01:00")))
+           .andExpect(jsonPath("$[0].item.id", is(bookingResponse.getItem().getId()), Long.class))
+           .andExpect(jsonPath("$[0].booker.id", is(bookingResponse.getBooker().getId()), Long.class))
+           .andExpect(jsonPath("$[0].status", is(bookingResponse.getStatus().toString())));
 
         verify(bookingService, times(1))
                 .getByOwner(anyLong(), any(), anyInt(), anyInt());
@@ -215,12 +215,12 @@ class BookingControllerTest {
                 .thenReturn(bookingResponse);
 
         mvc.perform(MockMvcRequestBuilders.patch(PATH_WITH_APPROVED)
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(bookingResponse.getStatus().toString())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.status", is(bookingResponse.getStatus().toString())));
 
         verify(bookingService, times(1))
                 .confirm(anyLong(), anyLong(), anyBoolean());

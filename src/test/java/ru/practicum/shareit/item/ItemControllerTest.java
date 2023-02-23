@@ -88,17 +88,17 @@ class ItemControllerTest {
                 .thenReturn(item);
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(item))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(item.getId()), Long.class))
-                .andExpect(jsonPath("$.name", is(item.getName())))
-                .andExpect(jsonPath("$.description", is(item.getDescription())))
-                .andExpect(jsonPath("$.available", is(item.getAvailable())))
-                .andExpect(jsonPath("$.requestId", is(1)));
+                                          .content(mapper.writeValueAsString(item))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(item.getId()), Long.class))
+           .andExpect(jsonPath("$.name", is(item.getName())))
+           .andExpect(jsonPath("$.description", is(item.getDescription())))
+           .andExpect(jsonPath("$.available", is(item.getAvailable())))
+           .andExpect(jsonPath("$.requestId", is(1)));
 
         verify(itemService, times(1))
                 .create(1L, item);
@@ -118,14 +118,14 @@ class ItemControllerTest {
                 .thenThrow(new BadRequestException("Invalid name"));
 
         mvc.perform(MockMvcRequestBuilders.post(PATH)
-                        .content(mapper.writeValueAsString(itemEmpty))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof MethodArgumentNotValidException));
+                                          .content(mapper.writeValueAsString(itemEmpty))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isBadRequest())
+           .andExpect(result -> assertTrue(result.getResolvedException()
+                   instanceof MethodArgumentNotValidException));
 
         verify(itemService, never())
                 .create(any(), any());
@@ -137,16 +137,16 @@ class ItemControllerTest {
                 .thenReturn(commentResponse);
 
         mvc.perform(MockMvcRequestBuilders.post(PATH_WITH_COMMENT)
-                        .content(mapper.writeValueAsString(comment))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(commentResponse.getId()), Long.class))
-                .andExpect(jsonPath("$.text", is(commentResponse.getText())))
-                .andExpect(jsonPath("$.authorName", is(commentResponse.getAuthorName())))
-                .andExpect(jsonPath("$.created", is("2023-01-01T01:01:00")));
+                                          .content(mapper.writeValueAsString(comment))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(commentResponse.getId()), Long.class))
+           .andExpect(jsonPath("$.text", is(commentResponse.getText())))
+           .andExpect(jsonPath("$.authorName", is(commentResponse.getAuthorName())))
+           .andExpect(jsonPath("$.created", is("2023-01-01T01:01:00")));
 
         verify(itemService, times(1))
                 .commentCreate(1L, 1L, comment);
@@ -165,14 +165,14 @@ class ItemControllerTest {
                 .thenThrow(new BadRequestException("Invalid text"));
 
         mvc.perform(MockMvcRequestBuilders.post(PATH_WITH_COMMENT)
-                        .content(mapper.writeValueAsString(commentEmpty))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof MethodArgumentNotValidException));
+                                          .content(mapper.writeValueAsString(commentEmpty))
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isBadRequest())
+           .andExpect(result -> assertTrue(result.getResolvedException()
+                   instanceof MethodArgumentNotValidException));
 
         verify(itemService, never())
                 .commentCreate(1L, 1L, commentEmpty);
@@ -184,15 +184,15 @@ class ItemControllerTest {
                 .thenReturn(itemResponse);
 
         mvc.perform(MockMvcRequestBuilders.get(PATH_WITH_ID)
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(itemResponse.getId()), Long.class))
-                .andExpect(jsonPath("$.name", is(itemResponse.getName())))
-                .andExpect(jsonPath("$.description", is(itemResponse.getDescription())))
-                .andExpect(jsonPath("$.available", is(itemResponse.getAvailable())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(itemResponse.getId()), Long.class))
+           .andExpect(jsonPath("$.name", is(itemResponse.getName())))
+           .andExpect(jsonPath("$.description", is(itemResponse.getDescription())))
+           .andExpect(jsonPath("$.available", is(itemResponse.getAvailable())));
 
         verify(itemService, times(1))
                 .get(anyLong(), anyLong());
@@ -204,15 +204,15 @@ class ItemControllerTest {
                 .thenReturn(List.of(itemResponse));
 
         mvc.perform(MockMvcRequestBuilders.get(PATH)
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(itemResponse.getId()), Long.class))
-                .andExpect(jsonPath("$[0].name", is(itemResponse.getName())))
-                .andExpect(jsonPath("$[0].description", is(itemResponse.getDescription())))
-                .andExpect(jsonPath("$[0].available", is(itemResponse.getAvailable())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$[0].id", is(itemResponse.getId()), Long.class))
+           .andExpect(jsonPath("$[0].name", is(itemResponse.getName())))
+           .andExpect(jsonPath("$[0].description", is(itemResponse.getDescription())))
+           .andExpect(jsonPath("$[0].available", is(itemResponse.getAvailable())));
 
         verify(itemService, times(1))
                 .getUserItems(anyLong(), anyInt(), anyInt());
@@ -224,15 +224,15 @@ class ItemControllerTest {
                 .thenReturn(List.of(item));
 
         mvc.perform(MockMvcRequestBuilders.get(PATH_WITH_SEARCH)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(item.getId()), Long.class))
-                .andExpect(jsonPath("$[0].name", is(item.getName())))
-                .andExpect(jsonPath("$[0].description", is(item.getDescription())))
-                .andExpect(jsonPath("$[0].available", is(item.getAvailable())))
-                .andExpect(jsonPath("$[0].requestId", is(item.getId()), Long.class));
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$[0].id", is(item.getId()), Long.class))
+           .andExpect(jsonPath("$[0].name", is(item.getName())))
+           .andExpect(jsonPath("$[0].description", is(item.getDescription())))
+           .andExpect(jsonPath("$[0].available", is(item.getAvailable())))
+           .andExpect(jsonPath("$[0].requestId", is(item.getId()), Long.class));
 
         verify(itemService, times(1))
                 .getSearchItems(anyString(), anyInt(), anyInt());
@@ -252,15 +252,15 @@ class ItemControllerTest {
                 .thenReturn(updateItem);
 
         mvc.perform(MockMvcRequestBuilders.patch(PATH_WITH_ID)
-                        .header("X-Sharer-User-Id", 1L)
-                        .content(mapper.writeValueAsString(updateItem))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(updateItem.getId()), Long.class))
-                .andExpect(jsonPath("$.name", is(updateItem.getName())))
-                .andExpect(jsonPath("$.description", is(updateItem.getDescription())));
+                                          .header("X-Sharer-User-Id", 1L)
+                                          .content(mapper.writeValueAsString(updateItem))
+                                          .characterEncoding(StandardCharsets.UTF_8)
+                                          .contentType(MediaType.APPLICATION_JSON)
+                                          .accept(MediaType.APPLICATION_JSON))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id", is(updateItem.getId()), Long.class))
+           .andExpect(jsonPath("$.name", is(updateItem.getName())))
+           .andExpect(jsonPath("$.description", is(updateItem.getDescription())));
 
         verify(itemService, times(1))
                 .update(anyLong(), anyLong(), any(ItemDto.class));
@@ -269,7 +269,7 @@ class ItemControllerTest {
     @Test
     void testDeleteItemById() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete(PATH_WITH_ID)
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isOk());
+                                          .header("X-Sharer-User-Id", 1L))
+           .andExpect(status().isOk());
     }
 }

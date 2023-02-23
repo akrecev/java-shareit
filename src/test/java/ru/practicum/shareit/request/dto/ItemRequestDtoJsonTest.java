@@ -33,13 +33,13 @@ class ItemRequestDtoJsonTest {
         JsonContent<ItemRequestDto> result = json.write(requestDto);
 
         assertThat(result).extractingJsonPathNumberValue("$.id")
-                .isEqualTo(1);
+                          .isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.description")
-                .isEqualTo(requestDto.getDescription());
+                          .isEqualTo(requestDto.getDescription());
         assertThat(result).extractingJsonPathNumberValue("$.requestor.id")
-                .isEqualTo(1);
+                          .isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.created")
-                .isEqualTo(requestDto.getCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
+                          .isEqualTo(requestDto.getCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
     }
 
 }
