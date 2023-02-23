@@ -6,9 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.model.DataNotFoundException;
-import ru.practicum.shareit.exception.model.ConflictException;
 import ru.practicum.shareit.exception.model.BadRequestException;
+import ru.practicum.shareit.exception.model.DataNotFoundException;
 
 @RestControllerAdvice
 @Slf4j
@@ -18,13 +17,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleDataNotFoundException(final DataNotFoundException e) {
         log.error("404 {}", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflictException(final ConflictException e) {
-        log.error("409 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
