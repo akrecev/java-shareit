@@ -12,3 +12,5 @@ ___
 
 [ShareItServer.java](./server/src/main/java/ru/practicum/shareit/ShareItServer.java)
 
+[Postman collection](./postman)
+
